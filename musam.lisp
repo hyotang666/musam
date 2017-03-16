@@ -1,5 +1,6 @@
 (in-package :cl-user)
-(defpackage :musam(:use :cl :alexandria :named-readtables)
+(defpackage :musam(:use :cl :named-readtables)
+  (:import-from :trestrul #:dotree)
   (:export
     #:enable
     #:|#`reader|
@@ -10,14 +11,7 @@
     ))
 (in-package :musam)
 
-(eval-when(:compile-toplevel :load-toplevel)
-  (defun doc (system namestring)
-    (uiop:read-file-string
-      (uiop:subpathname(asdf:system-source-directory(asdf:find-system system))
-	namestring))))
-
 (defmacro enable()
-  #.(doc :musam "doc/enable.M.md")
   (let((var(gensym "IT")))
     `(EVAL-WHEN(:COMPILE-TOPLEVEL :LOAD-TOPLEVEL :EXECUTE)
        (LET((,var(GET-DISPATCH-MACRO-CHARACTER #\# #\`)))
@@ -28,33 +22,37 @@
 	       (REPLACE()#0#)))
 	 #0#)))))
 
-(defparameter *anaphora-marker* #\$
-  #.(doc :musam "doc/Aanaphora-markerA.V.md"))
+(defparameter *anaphora-marker* #\$)
 
 (defun |#`reader|(stream character number)
-  #.(doc :musam "doc/#`reader.F.md")
   (declare(ignore character number))
   (let((char(let((temp(read-char stream t t t)))
 	      (if(char= #\( temp)
 		(progn(unread-char temp stream) *anaphora-marker*)
 		temp)))
-       (form(read stream t t nil)))
+       (form(read stream t t t)))
     `(LAMBDA,(lambda-list form char)
        ,form)))
 
 (defun lambda-list(form char)
-  (remove-duplicates(anaphoric-symbols (flatten form)
-				       char)
-    :from-end t))
-
-(defun anaphoric-symbols(list char)
-  (loop :for elt :in list
-	:when(anaphoric-symbolp elt char)
-	:collect elt))
-
-(defun anaphoric-symbolp(arg char)
-  (and (symbolp arg)
-       (char= char (char(symbol-name arg)0))))
+  (let(acc)
+    (labels((REC(tree)
+	      (dotree(v tree)
+		(cond
+		  #+sbcl
+		  ((sb-int:comma-p v) (ENTRY-POINT(sb-int:comma-expr v)))
+		  ((ANAPHORIC-SYMBOLP v)(pushnew v acc)))))
+	    (ANAPHORIC-SYMBOLP(arg)
+	      (and (symbolp arg)
+		   (char= char (char(symbol-name arg)0))))
+	    (ENTRY-POINT(form)
+	      (if(atom form)
+		(when(ANAPHORIC-SYMBOLP form)
+		  (pushnew form acc))
+		(REC form)))
+	    )
+      (ENTRY-POINT form))
+    (nreverse acc)))
 
 (defreadtable syntax
   (:merge :standard)

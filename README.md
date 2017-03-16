@@ -6,9 +6,9 @@ Lisp has strong first class function.
 * Issues
 LAMBDA is too mach long.
 
-* Propose
+* Proposal
 We can customize reader macro.
-How about to use #\`?
+How about to use `#\``?
 
 ## Usage
 ```lisp
