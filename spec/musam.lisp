@@ -1,7 +1,7 @@
 (defpackage :musam.spec (:use :cl :jingoh :musam)
   (:shadowing-import-from :musam #:enable #:syntax))
 (in-package :musam.spec)
-(setup :musam.spec)
+(setup :musam)
 
 (requirements-about ENABLE :around (let((*readtable*(copy-readtable nil)))
 				     (call-body)))
