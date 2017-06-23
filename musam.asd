@@ -3,7 +3,7 @@
 (defsystem :musam
   :description "Shorthand for LAMBDA."
   :long-description #.(uiop:read-file-string
-                        (uiop:subpathname "README.md" *load-pathname*))
+                        (uiop:subpathname *load-pathname* "README.md"))
   :author "Shinich Sato"
   :depends-on (:named-readtables :millet :trestrul)
   :components((:file "musam")))
