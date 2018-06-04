@@ -5,7 +5,12 @@
   :long-description #.(uiop:read-file-string
                         (uiop:subpathname *load-pathname* "README.md"))
   :author "Shinich Sato"
-  :depends-on (:named-readtables :millet :trestrul)
+  :depends-on
+  (
+   "named-readtables"   ; manage readtables.
+   "millet"             ; wrapper for implementation dependent utilities.
+   "trestrul"           ; utilities for tree structured list.
+   )
   :license "MIT"
   :components((:file "musam")))
 
