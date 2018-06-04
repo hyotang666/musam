@@ -8,6 +8,6 @@
   :depends-on (:named-readtables :millet :trestrul)
   :license "MIT"
   :components((:file "musam")))
-;; Perform method below is added by JINGOH.GENERATOR.
-(defmethod perform ((o test-op) (c (eql (find-system "musam"))))
- (test-system :musam.test))
+
+(defmethod component-depends-on ((o test-op) (c (eql (find-system "musam"))))
+  (append (call-next-method)'((test-op "musam.test"))))
