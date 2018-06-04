@@ -19,7 +19,7 @@ How about to use `#\``?
 ## From developer
 
 * Product's goal - maybe already?
-* License - public domain
+* License - MIT
 * Developped with - CLISP
 * Tested with - SBCL CCL ECL
 
