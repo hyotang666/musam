@@ -132,6 +132,16 @@
 => (lambda($hoge)`(,$hoge))
 ,:test equalp ; <--- override default test (i.e. equal), for sbcl which represents `,$hoge` as structure.
 
+; *NOTE!* - All marked symbol is treated as argument, even if it is quoted.
+#?(read-from-string "#`(list '$hoge)") ; bad example
+=> (lambda($hoge) ; <--- Causes error.
+     (list '$hoge))
+
+; In such case, you need to specify another mark.
+#?(read-from-string "#`&(list '$hoge)") ; good example
+=> (lambda()
+     (list '$hoge))
+
 (requirements-about *ANAPHORA-MARKER*)
 
 ;;;; Description:
